@@ -1,0 +1,29 @@
+{
+  "name": "roxbury",
+  "version": "1.0.0",
+  "description": "bar app",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/andrewheartsxd/bartender_app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andrewheartsxd/bartender_app/issues"
+  },
+  "homepage": "https://github.com/andrewheartsxd/bartender_app",
+  "dependencies": {
+    "body-parser": "^1.12.0",
+    "express": "^4.12.0",
+    "mongoose": "^3.8.23"
+  },
+  "devDependencies": {
+    "chai": "^2.0.0",
+    "chai-http": "^1.0.0"
+  }
+}
