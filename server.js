@@ -6,8 +6,6 @@ var barRoutes = require('./routes/barRoutes');
 
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost/barapp_development');
 
-
-
 var app = express();
 var router = express.Router();
 
