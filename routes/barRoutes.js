@@ -91,25 +91,6 @@ module.exports = function(app) {
     });
   });
 
-
-// Queue
-
-  app.get('/cheers/queue', function(req, res) {
-    Queue.find({}, function(err, data) {
-      if (err) return res.status(500).send({'msg': 'could not retrieve drink orders'});
-      res.json(data);
-    });
-  });
-
-  app.post('/cheers/queue', function(req, res) {
-    var newQueue = new Queue(req.body);
-    newQueue.save(function(err, data) {
-      if (err) return res.status(500).send({'msg': 'could not save drink'});
-      
-      res.json(data);
-    });
-  });
-
 };
 
 
