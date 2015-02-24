@@ -10,7 +10,7 @@ var drinkOrderSchema = mongoose.Schema({
   //Kind of Drink
   drinkID: String,
   //Bartender who makes drink
-  BartenderID: {type: String, default: null}
+  bartenderID: {type: String, default: null}
 });
 
 module.exports = mongoose.model('DrinkOrder', drinkOrderSchema);

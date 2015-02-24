@@ -91,6 +91,7 @@ module.exports = function(app) {
     });
   });
 
+<<<<<<< HEAD
 
 // Queue
 
@@ -110,6 +111,8 @@ module.exports = function(app) {
     });
   });
 
+=======
+>>>>>>> 12b61dc9e9ab8aff43af2b1cd0963d6e8e8e4064
 };
 
 
