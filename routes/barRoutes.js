@@ -40,7 +40,7 @@ module.exports = function(app) {
   app.post('/cheers/drinkorder', function(req, res) {
     var newDrinkOrder = new DrinkOrder(req.body);
     newDrinkOrder.save(function(err, data) {
-      if (err) return res.status(500).send({'msg': 'could not save drink'});
+      if (err) return res.status(500).send({'msg': 'could not save drink order'});
       
       res.json(data);
     });
@@ -60,7 +60,7 @@ module.exports = function(app) {
 
   app.get('/cheers/bartender', function(req, res) {
     Bartender.find({}, function(err, data) {
-      if (err) return res.status(500).send({'msg': 'could not retrieve drink orders'});
+      if (err) return res.status(500).send({'msg': 'could not retrieve bartender'});
       res.json(data);
     });
   });
@@ -68,7 +68,7 @@ module.exports = function(app) {
   app.post('/cheers/bartender', function(req, res) {
     var newBartender = new Bartender(req.body);
     newBartender.save(function(err, data) {
-      if (err) return res.status(500).send({'msg': 'could not save drink'});
+      if (err) return res.status(500).send({'msg': 'could not save bartender'});
       
       res.json(data);
     });
@@ -79,7 +79,7 @@ module.exports = function(app) {
 
   app.get('/cheers/queue', function(req, res) {
     Queue.find({}, function(err, data) {
-      if (err) return res.status(500).send({'msg': 'could not retrieve drink orders'});
+      if (err) return res.status(500).send({'msg': 'could not retrieve queue'});
       res.json(data);
     });
   });
@@ -87,7 +87,7 @@ module.exports = function(app) {
   app.post('/cheers/queue', function(req, res) {
     var newQueue = new Queue(req.body);
     newQueue.save(function(err, data) {
-      if (err) return res.status(500).send({'msg': 'could not save drink'});
+      if (err) return res.status(500).send({'msg': 'could not save queue'});
       
       res.json(data);
     });
