@@ -3,17 +3,17 @@
 var DrinkOrder = require('../models/DrinkOrder');
 var Drink = require('../models/Drink');
 var Bartender = require('../models/Bartender');
-var Queue = require('../models/Queue');
 var bodyparser = require('body-parser');
+var eat_auth = require('../lib/eat_auth');
 
 
-module.exports = function(app) {
+module.exports = function(app, appSecret) {
   app.use(bodyparser.json());
 
 // Drink
 
   //retrieve all drinks that can be made
-  app.get('/cheers/drink', function(req, res) {
+  app.get('/cheers/drink', eat_auth(appSecret), function(req, res) {
     Drink.find({}, function(err, data) {
       if (err) return res.status(500).send({'msg': 'could not retrieve drinks'});
       res.json(data);
@@ -21,7 +21,7 @@ module.exports = function(app) {
   });
 
   //add new drink to database
-  app.post('/cheers/drink', function(req, res) {
+  app.post('/cheers/drink', eat_auth(appSecret), function(req, res) {
     var newDrink = new Drink(req.body);
     newDrink.save(function(err, data) {
       if (err) return res.status(500).send({'msg': 'could not save drink'});
@@ -31,7 +31,7 @@ module.exports = function(app) {
   });
 
   //update drinks that can be made (FOR DEVELOPMENT) 
-  app.put('/cheers/drink/:drink', function(req, res) {
+  app.put('/cheers/drink/:drink', eat_auth(appSecret), function(req, res) {
     var updatedDrink = req.body;
     delete req.body._id;
     Drink.update({drinkName: req.params.drink}, updatedDrink, function(err, data) {
@@ -45,7 +45,7 @@ module.exports = function(app) {
 // Drink Order
 
   //retrieves all drink orders (the queue)
-  app.get('/cheers/drinkorder', function(req, res) {
+  app.get('/cheers/drinkorder', eat_auth(appSecret), function(req, res) {
     DrinkOrder.find({}, function(err, data) {
       if (err) return res.status(500).send({'msg': 'could not retrieve drink orders'});
       res.json(data);
@@ -53,7 +53,7 @@ module.exports = function(app) {
   });
 
   //create new drink order
-  app.post('/cheers/drinkorder', function(req, res) {
+  app.post('/cheers/drinkorder', eat_auth(appSecret), function(req, res) {
     var newDrinkOrder = new DrinkOrder(req.body);
     newDrinkOrder.save(function(err, data) {
       if (err) return res.status(500).send({'msg': 'could not save drink'});
@@ -63,7 +63,8 @@ module.exports = function(app) {
   });
 
   //update drinkOrder object's bartenderID
-  app.put('/cheers/drinkorder/:drinkorderid', function(req, res) {
+  //need separate token
+  app.put('/cheers/drinkorder/:drinkorderid', eat_auth(appSecret), function(req, res) {
     var updatedDrinkOrder = req.body;
     delete req.body._id;
     DrinkOrder.update({_id: req.params.drinkorderid}, updatedDrinkOrder, function(err, data) {
@@ -75,21 +76,21 @@ module.exports = function(app) {
 
 // Bartender
 
-  app.get('/cheers/bartender', function(req, res) {
-    Bartender.find({}, function(err, data) {
-      if (err) return res.status(500).send({'msg': 'could not retrieve drink orders'});
-      res.json(data);
-    });
-  });
+  //app.get('/cheers/bartender', function(req, res) {
+  //  Bartender.find({}, function(err, data) {
+  //    if (err) return res.status(500).send({'msg': 'could not retrieve drink orders'});
+  //    res.json(data);
+  //  });
+  //});
 
-  app.post('/cheers/bartender', function(req, res) {
-    var newBartender = new Bartender(req.body);
-    newBartender.save(function(err, data) {
-      if (err) return res.status(500).send({'msg': 'could not save drink'});
-      
-      res.json(data);
-    });
-  });
+  //app.post('/cheers/bartender', function(req, res) {
+  //  var newBartender = new Bartender(req.body);
+  //  newBartender.save(function(err, data) {
+  //    if (err) return res.status(500).send({'msg': 'could not save drink'});
+  //    
+  //    res.json(data);
+  //  });
+  //});
 
 };
 
