@@ -3,14 +3,14 @@
 var mongoose = require('mongoose');
 
 var drinkOrderSchema = mongoose.Schema({
-  //Unique drink order ID
-  drinkOrderID: String,
   //Customer who ordered
   customerID: String,
   //Kind of Drink
   drinkID: String,
   //Bartender who makes drink
-  bartenderID: {type: String, default: null}
+  bartenderID: {type: String, default: null},
+  //Time Stamp
+  timeStamp: String
 });
 
 module.exports = mongoose.model('DrinkOrder', drinkOrderSchema);

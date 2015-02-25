@@ -3,7 +3,6 @@
 var DrinkOrder = require('../models/DrinkOrder');
 var Drink = require('../models/Drink');
 var Bartender = require('../models/Bartender');
-var Queue = require('../models/Queue');
 var bodyparser = require('body-parser');
 
 
@@ -55,6 +54,7 @@ module.exports = function(app) {
   //create new drink order
   app.post('/cheers/drinkorder', function(req, res) {
     var newDrinkOrder = new DrinkOrder(req.body);
+    newDrinkOrder.timeStamp = newDrinkOrder._id.getTimestamp();
     newDrinkOrder.save(function(err, data) {
       if (err) return res.status(500).send({'msg': 'could not save drink order'});
       
@@ -90,29 +90,6 @@ module.exports = function(app) {
       res.json(data);
     });
   });
-
-<<<<<<< HEAD
-
-// Queue
-
-  app.get('/cheers/queue', function(req, res) {
-    Queue.find({}, function(err, data) {
-      if (err) return res.status(500).send({'msg': 'could not retrieve queue'});
-      res.json(data);
-    });
-  });
-
-  app.post('/cheers/queue', function(req, res) {
-    var newQueue = new Queue(req.body);
-    newQueue.save(function(err, data) {
-      if (err) return res.status(500).send({'msg': 'could not save queue'});
-      
-      res.json(data);
-    });
-  });
-
-=======
->>>>>>> 12b61dc9e9ab8aff43af2b1cd0963d6e8e8e4064
 };
 
 
