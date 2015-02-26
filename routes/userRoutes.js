@@ -5,7 +5,7 @@ var User = require('../models/User');
 var fs = require('fs');
 
 module.exports = function(app, passport, appSecret) {
-  app.use(bodyparser.json());
+  app.use(bodyparser.json({limit: '50mb'}));
   app.post('/create_user', function(req, res) {
 
     var newUser = new User();
@@ -22,9 +22,8 @@ module.exports = function(app, passport, appSecret) {
         if (err) return res.status(500).send({msg: 'could not create user'});
 
         var userMongoID = data[0]._id;
-        //should be req.body.imageString vvvvvvvvvvvvvvvvvv
-        var imageBuff = fs.readFileSync('./public/b52.jpg');
-        fs.writeFileSync('./public/' + userMongoID + '.jpg', imageBuff);
+        var imageBuff = new Buffer(req.body.userPic, 'base64');
+        fs.writeFileSync('./public/' + userMongoID + '.jpg', imageBuff, 'base64');
         console.dir(userMongoID);
       });
 
