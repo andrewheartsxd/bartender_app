@@ -6,9 +6,9 @@ var drinkSchema = mongoose.Schema({
   //Type of Drink
   drinkName: String,
   //Drink Ingredients
-  drinkRecipe: String,
+  drinkRecipe: [String],
   //Drink Picture
-  drinkPicture: String
+  drinkPicture: String,
 });
 
 module.exports = mongoose.model('Drink', drinkSchema);

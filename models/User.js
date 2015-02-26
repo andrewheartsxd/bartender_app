@@ -10,6 +10,7 @@ var userSchema = new mongoose.Schema({
     password: String
   },
   username: String,
+  userPic: String,
   bartender: {type: Boolean, default: false}
 });
 

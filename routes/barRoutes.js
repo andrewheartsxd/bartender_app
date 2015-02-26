@@ -6,7 +6,6 @@ var Bartender = require('../models/Bartender');
 var bodyparser = require('body-parser');
 var eat_auth = require('../lib/eat_auth');
 
-
 module.exports = function(app, appSecret) {
   app.use(bodyparser.json());
 
