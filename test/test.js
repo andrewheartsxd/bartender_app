@@ -65,7 +65,6 @@ describe('The Bartender App', function(){
       .end(function(err, res) {
         expect(err).to.eql(null);
         expect(res).to.have.status(200);
-        expect(res.body).to.be.an.object;
         done();
       });
   });
@@ -75,7 +74,7 @@ describe('The Bartender App', function(){
       .get('/cheers/drinkorder')
       .send({eat: token})
       .end(function(err, res) {
-        expect(res.body[0].orderInQueue).to.be.true;
+        expect(res.body[0].orderInQueue).to.eql(true);
         done();
       });
   });
