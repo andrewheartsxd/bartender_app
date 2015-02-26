@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 var barRoutes = require('./routes/barRoutes');
 var passport = require('passport');
 
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost/barapp_development');
+mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/barapp_development');
 
 var app = express();
 app.set('appSecret', process.env.SECRET || 'imanalcoholic');
