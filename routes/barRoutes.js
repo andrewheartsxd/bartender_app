@@ -20,7 +20,8 @@ module.exports = function(app, appSecret) {
     });
   });
 
-  //add new drink to database
+  //add new drink to database (WILL BE POPULATED BY DEVS)
+  //fields: drinkName, drinkRecipe, drinkPicture
   app.post('/cheers/drink', eat_auth(appSecret), function(req, res) {
     var newDrink = new Drink(req.body);
     newDrink.save(function(err, data) {
@@ -53,45 +54,31 @@ module.exports = function(app, appSecret) {
   });
 
   //create new drink order
+  //fields: drinkOrderID, customerID, drinkID, bartenderID
   app.post('/cheers/drinkorder', eat_auth(appSecret), function(req, res) {
     var newDrinkOrder = new DrinkOrder(req.body);
     newDrinkOrder.save(function(err, data) {
-      if (err) return res.status(500).send({'msg': 'could not save drink'});
+      if (err) return res.status(500).send({'msg': 'could not save drink order'});
       
       res.json(data);
     });
   });
 
   //update drinkOrder object's bartenderID
-  //need separate token
   app.put('/cheers/drinkorder/:drinkorderid', eat_auth(appSecret), function(req, res) {
-    var updatedDrinkOrder = req.body;
-    delete req.body._id;
-    DrinkOrder.update({_id: req.params.drinkorderid}, updatedDrinkOrder, function(err, data) {
-     if (err) return res.status(500).send({'msg': 'could not add bartender'});
+    if (req.body.bartender === true) {
+      var updatedDrinkOrder = req.body;
+      delete req.body._id;
+      DrinkOrder.update({_id: req.params.drinkorderid}, updatedDrinkOrder, function(err, data) {
+       if (err) return res.status(500).send({'msg': 'could not add bartender'});
 
-     res.json(req.body);
-    });
+       res.json(req.body);
+
+      });
+    } else {
+      return res.status(403).send({'msg': 'u drunk bro?'});
+    }
   });
-
-// Bartender
-
-  //app.get('/cheers/bartender', function(req, res) {
-  //  Bartender.find({}, function(err, data) {
-  //    if (err) return res.status(500).send({'msg': 'could not retrieve drink orders'});
-  //    res.json(data);
-  //  });
-  //});
-
-  //app.post('/cheers/bartender', function(req, res) {
-  //  var newBartender = new Bartender(req.body);
-  //  newBartender.save(function(err, data) {
-  //    if (err) return res.status(500).send({'msg': 'could not save drink'});
-  //    
-  //    res.json(data);
-  //  });
-  //});
-
 };
 
 

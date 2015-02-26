@@ -9,7 +9,8 @@ var userSchema = new mongoose.Schema({
     email: String,
     password: String
   },
-  username: String
+  username: String,
+  bartender: {type: Boolean, default: false}
 });
 
 userSchema.methods.generateHash = function(password) {
