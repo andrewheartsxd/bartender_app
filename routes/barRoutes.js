@@ -63,10 +63,11 @@ module.exports = function(app, appSecret) {
     });
   });
 
-  //update drinkOrder object's bartenderID
+  //update drinkOrder object's bartenderID - the passed in body needs to be the entire drink order, with bartender set to null
   app.put('/cheers/drinkorder/:drinkorderid', eat_auth(appSecret), function(req, res) {
-    if (req.body.bartender === true) {
+    if (req.user.bartender === true) {
       var updatedDrinkOrder = req.body;
+      updatedDrinkOrder.bartender = req.user._id;
       delete req.body._id;
       DrinkOrder.update({_id: req.params.drinkorderid}, updatedDrinkOrder, function(err, data) {
        if (err) return res.status(500).send({'msg': 'could not add bartender'});
@@ -75,7 +76,7 @@ module.exports = function(app, appSecret) {
 
       });
     } else {
-      return res.status(403).send({'msg': 'u drunk bro?'});
+      return res.status(403).send({'msg': 'could not add bartender'});
     }
   });
 };

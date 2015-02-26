@@ -13,9 +13,11 @@ module.exports = function(app, passport, appSecret) {
     
     newUser.basic.email = req.body.email;
     newUser.basic.password = newUser.generateHash(req.body.password);
+    if(req.body.promoCode === "alcoholic") newUser.bartender = true;
     newUser.save(function(err, user) {
       if (err) return res.status(500).send({msg: 'could not create user'});
 
+    //saves profile picture to /public folder as _id.jpg
       User.find({'basic.email': newUser.basic.email}, function(err, data) {
         if (err) return res.status(500).send({msg: 'could not create user'});
 
@@ -25,9 +27,8 @@ module.exports = function(app, passport, appSecret) {
         fs.writeFileSync('./public/' + userMongoID + '.jpg', imageBuff);
         console.dir(userMongoID);
       });
-      
-       
 
+       
       user.generateToken(appSecret, function(err, token) {
         if (err) res.status(500).send({msg: 'could not generate token'});
         res.json({eat: token});
