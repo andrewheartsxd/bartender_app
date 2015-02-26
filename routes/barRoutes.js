@@ -56,6 +56,8 @@ module.exports = function(app, appSecret) {
   //fields: drinkOrderID, customerID, drinkID, bartenderID
   app.post('/cheers/drinkorder', eat_auth(appSecret), function(req, res) {
     var newDrinkOrder = new DrinkOrder(req.body);
+    newDrinkOrder.customerID = req.user._id;
+    //newDrinkOrder.drinkOrderID = something;
     newDrinkOrder.save(function(err, data) {
       if (err) return res.status(500).send({'msg': 'could not save drink order'});
       
