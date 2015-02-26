@@ -63,11 +63,13 @@ module.exports = function(app, appSecret) {
     });
   });
 
-  //update drinkOrder object's bartenderID - the passed in body needs to be the entire drink order, with bartender set to null
+  //update drinkOrder object's bartenderID, sets orderInProgress to true - the passed in body needs to be the entire drink order, with bartender set to null
   app.put('/cheers/drinkorder/:drinkorderid', eat_auth(appSecret), function(req, res) {
-    if (req.user.bartender === true) {
+    if (req.user[0].bartender) {
       var updatedDrinkOrder = req.body;
-      updatedDrinkOrder.bartender = req.user._id;
+      updatedDrinkOrder.bartenderID = req.user[0]._id;
+      updatedDrinkOrder.orderInProgress = true;
+      updatedDrinkOrder.orderInQueue = true;
       delete req.body._id;
       DrinkOrder.update({_id: req.params.drinkorderid}, updatedDrinkOrder, function(err, data) {
        if (err) return res.status(500).send({'msg': 'could not add bartender'});
@@ -76,10 +78,32 @@ module.exports = function(app, appSecret) {
 
       });
     } else {
-      return res.status(403).send({'msg': 'could not add bartender'});
+      console.dir(req.user);
+      return res.status(403).send({'msg': 'could not add bartender (bad auth)'});
+    }
+  });
+
+
+
+  //allow bartender to mark order as completed
+  app.put('/cheers/drinkorder/completed/:drinkorderid', eat_auth(appSecret), function(req, res) {
+    if (req.user[0].bartender) {
+      var updatedDrinkOrder = req.body;
+      updatedDrinkOrder.orderInQueue = false;
+      delete req.body._id;
+      DrinkOrder.update({_id: req.params.drinkorderid}, updatedDrinkOrder, function(err, data) {
+       if (err) return res.status(500).send({'msg': 'could not add bartender'});
+
+       res.json(req.body);
+
+      });
+    } else {
+      console.dir(req.user);
+      return res.status(403).send({'msg': 'could not add bartender (bad auth)'});
     }
   });
 };
+
 
 
 
