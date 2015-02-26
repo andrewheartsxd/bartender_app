@@ -4,8 +4,11 @@ var express = require('express');
 var mongoose = require('mongoose');
 var barRoutes = require('./routes/barRoutes');
 var passport = require('passport');
+var static = require('node-static');
 
 mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/barapp_development');
+
+new static.Server('./public');
 
 var app = express();
 app.set('appSecret', process.env.SECRET || 'imanalcoholic');
