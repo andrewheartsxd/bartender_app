@@ -57,7 +57,8 @@ module.exports = function(app, appSecret) {
   app.post('/cheers/drinkorder', eat_auth(appSecret), function(req, res) {
     var newDrinkOrder = new DrinkOrder(req.body);
     newDrinkOrder.customerID = req.user._id;
-    //newDrinkOrder.drinkOrderID = something;
+    //given the user ID , look up the user profile pic web address
+    newDrinkOrder.drinkID = req.body.drinkID;
     newDrinkOrder.save(function(err, data) {
       if (err) return res.status(500).send({'msg': 'could not save drink order'});
       
@@ -69,6 +70,8 @@ module.exports = function(app, appSecret) {
   app.put('/cheers/drinkorder/:drinkorderid', eat_auth(appSecret), function(req, res) {
     if (req.user[0].bartender) {
       var updatedDrinkOrder = req.body;
+      //updatedDrinkOrder.drinkID = 
+      //updatedDrinkOrder.customerPicture = 
       updatedDrinkOrder.bartenderID = req.user[0]._id;
       updatedDrinkOrder.orderInProgress = true;
       updatedDrinkOrder.orderInQueue = true;
