@@ -9,6 +9,8 @@ var drinkOrderSchema = mongoose.Schema({
   customerID: String,
   //Kind of Drink
   drinkID: String,
+  //Customer Profile Picture
+  customerPicture: String,
   //Bartender who makes drink
   bartenderID: {type: String, default: null},
   //Is the drink being made?
