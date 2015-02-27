@@ -68,20 +68,20 @@ module.exports = function(app, appSecret) {
     //vvvvvvvv CONFIRM THIS IS PROVIDED BY iOS
     newDrinkOrder.drinkID = req.body.drinkID;
 
-    newDrinkOrder.save(function(err, data) {
+    //newDrinkOrder.save(function(err, data) {
+    //    if (err) return res.status(500).send({'msg': 'could not save drink order'});
+    //    res.json(data);
+    //});
+
+    Drink.findOne({_id: req.body.drinkID}, function(err, data) {
+      console.log(data.drinkName);
+      newDrinkOrder.drinkName = data.drinkName; 
+      
+      newDrinkOrder.save(function(err, data) {
         if (err) return res.status(500).send({'msg': 'could not save drink order'});
         res.json(data);
       });
-
-    //Drink.find({_id: req.body.drinkID}, function(err, data) {
-    //  console.log(data[0].drinkName);
-    //  newDrinkOrder.drinkName = data[0].drinkName; 
-    //  
-    //  newDrinkOrder.save(function(err, data) {
-    //    if (err) return res.status(500).send({'msg': 'could not save drink order'});
-    //    res.json(data);
-    //  });
-    //});
+    });
     
   });
 
@@ -90,11 +90,11 @@ module.exports = function(app, appSecret) {
     if (req.user[0].bartender) {
       var updatedDrinkOrder = req.body;
 
-      DrinkOrder.find({_id: req.params.drinkorderid}, function(err, data) {
+      DrinkOrder.findOne({_id: req.params.drinkorderid}, function(err, data) {
         console.dir(data);
         updatedDrinkOrder.drinkID = data[0].drinkID;
         updatedDrinkOrder.customerUsername = data[0].customerUsername;
-        //updatedDrinkOrder.drinkName = data[0].drinkName;
+        updatedDrinkOrder.drinkName = data[0].drinkName;
         updatedDrinkOrder.customerID = data[0].customerID;
         updatedDrinkOrder.customerPicture = data[0].customerPicture;
       });
@@ -125,7 +125,7 @@ module.exports = function(app, appSecret) {
         console.dir(data);
         updatedDrinkOrder.drinkID = data[0].drinkID;
         updatedDrinkOrder.customerUsername = data[0].customerUsername;
-        //updatedDrinkOrder.drinkName = data[0].drinkName;
+        updatedDrinkOrder.drinkName = data[0].drinkName;
         updatedDrinkOrder.customerID = data[0].customerID;
         updatedDrinkOrder.customerPicture = data[0].customerPicture;
       });
