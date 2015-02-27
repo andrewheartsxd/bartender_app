@@ -91,9 +91,10 @@ module.exports = function(app, appSecret) {
         updatedDrinkOrder.customerUsername = data[0].customerUsername;
         updatedDrinkOrder.drinkName = data[0].drinkName;
         updatedDrinkOrder.customerID = data[0].customerID;
+        updatedDrinkOrder.customerPicture = data[0].customerPicture;
       });
 
-      updatedDrinkOrder.customerPicture = req.body.customerPicture;
+      //updatedDrinkOrder.customerPicture = req.body.customerPicture;
 
       updatedDrinkOrder.bartenderID = req.user[0]._id;
       updatedDrinkOrder.orderInProgress = true;
@@ -117,7 +118,7 @@ module.exports = function(app, appSecret) {
       var updatedDrinkOrder = req.body;
       updatedDrinkOrder.orderInQueue = false;
 
-      updatedDrinkOrder.customerPicture = req.body.customerPicture;
+      //updatedDrinkOrder.customerPicture = req.body.customerPicture;
 
       DrinkOrder.find({_id: req.params.drinkorderid}, function(err, data) {
         console.dir(data);
@@ -125,6 +126,7 @@ module.exports = function(app, appSecret) {
         updatedDrinkOrder.customerUsername = data[0].customerUsername;
         updatedDrinkOrder.drinkName = data[0].drinkName;
         updatedDrinkOrder.customerID = data[0].customerID;
+        updatedDrinkOrder.customerPicture = data[0].customerPicture;
       });
 
       updatedDrinkOrder.bartenderID = req.user[0]._id;
