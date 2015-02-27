@@ -66,21 +66,22 @@ module.exports = function(app, appSecret) {
 
     //vvvvvvvv CONFIRM THIS IS PROVIDED BY iOS
     newDrinkOrder.drinkID = req.body.drinkID;
+    console.log(req.body.drinkID);
 
-    //newDrinkOrder.save(function(err, data) {
-    //    if (err) return res.status(500).send({'msg': 'could not save drink order'});
-    //    res.json(data);
-    //});
-
-    Drink.findOne({_id: req.body.drinkID}, function(err, data) {
-      console.dir(req.body.drinkID);
-      newDrinkOrder.drinkName = data.drinkName; 
-      
-      newDrinkOrder.save(function(err, data) {
+    newDrinkOrder.save(function(err, data) {
         if (err) return res.status(500).send({'msg': 'could not save drink order'});
         res.json(data);
-      });
     });
+
+    //Drink.findOne({_id: req.body.drinkID}, function(err, data) {
+    //  console.dir(req.body.drinkID);
+    //  newDrinkOrder.drinkName = data.drinkName; 
+    //  
+    //  newDrinkOrder.save(function(err, data) {
+    //    if (err) return res.status(500).send({'msg': 'could not save drink order'});
+    //    res.json(data);
+    //  });
+    //});
     
   });
 
