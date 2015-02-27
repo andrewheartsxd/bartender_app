@@ -92,11 +92,11 @@ module.exports = function(app, appSecret) {
 
       DrinkOrder.findOne({_id: req.params.drinkorderid}, function(err, data) {
         console.dir(data);
-        updatedDrinkOrder.drinkID = data[0].drinkID;
-        updatedDrinkOrder.customerUsername = data[0].customerUsername;
-        updatedDrinkOrder.drinkName = data[0].drinkName;
-        updatedDrinkOrder.customerID = data[0].customerID;
-        updatedDrinkOrder.customerPicture = data[0].customerPicture;
+        updatedDrinkOrder.drinkID = data.drinkID;
+        updatedDrinkOrder.customerUsername = data.customerUsername;
+        updatedDrinkOrder.drinkName = data.drinkName;
+        updatedDrinkOrder.customerID = data.customerID;
+        updatedDrinkOrder.customerPicture = data.customerPicture;
       });
 
       updatedDrinkOrder.bartenderID = req.user[0]._id;
@@ -121,13 +121,13 @@ module.exports = function(app, appSecret) {
       var updatedDrinkOrder = req.body;
       updatedDrinkOrder.orderInQueue = false;
 
-      DrinkOrder.find({_id: req.params.drinkorderid}, function(err, data) {
+      DrinkOrder.findOne({_id: req.params.drinkorderid}, function(err, data) {
         console.dir(data);
-        updatedDrinkOrder.drinkID = data[0].drinkID;
-        updatedDrinkOrder.customerUsername = data[0].customerUsername;
-        updatedDrinkOrder.drinkName = data[0].drinkName;
-        updatedDrinkOrder.customerID = data[0].customerID;
-        updatedDrinkOrder.customerPicture = data[0].customerPicture;
+        updatedDrinkOrder.drinkID = data.drinkID;
+        updatedDrinkOrder.customerUsername = data.customerUsername;
+        updatedDrinkOrder.drinkName = data.drinkName;
+        updatedDrinkOrder.customerID = data.customerID;
+        updatedDrinkOrder.customerPicture = data.customerPicture;
       });
 
       updatedDrinkOrder.bartenderID = req.user[0]._id;
