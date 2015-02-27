@@ -63,25 +63,24 @@ module.exports = function(app, appSecret) {
     newDrinkOrder.customerID = req.user[0]._id;
     newDrinkOrder.customerUsername = req.user[0].username;
     newDrinkOrder.customerPicture = 'https://cheers-bartender-app.herokuapp.com/' + req.user[0]._id + '.jpg';
-    newDrinkOrder.drinkName = '';
 
     //vvvvvvvv CONFIRM THIS IS PROVIDED BY iOS
     newDrinkOrder.drinkID = req.body.drinkID;
 
-    newDrinkOrder.save(function(err, data) {
-        if (err) return res.status(500).send({'msg': 'could not save drink order'});
-        res.json(data);
-    });
-
-    //Drink.findOne({_id: req.body.drinkID}, function(err, data) {
-    //  console.log(data.drinkName);
-    //  newDrinkOrder.drinkName = data.drinkName; 
-    //  
-    //  newDrinkOrder.save(function(err, data) {
+    //newDrinkOrder.save(function(err, data) {
     //    if (err) return res.status(500).send({'msg': 'could not save drink order'});
     //    res.json(data);
-    //  });
     //});
+
+    Drink.findOne({_id: req.body.drinkID}, function(err, data) {
+      console.log(data.drinkName);
+      newDrinkOrder.drinkName = data.drinkName; 
+      
+      newDrinkOrder.save(function(err, data) {
+        if (err) return res.status(500).send({'msg': 'could not save drink order'});
+        res.json(data);
+      });
+    });
     
   });
 
