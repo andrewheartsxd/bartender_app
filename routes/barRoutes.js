@@ -73,7 +73,7 @@ module.exports = function(app, appSecret) {
     //});
 
     Drink.findOne({_id: req.body.drinkID}, function(err, data) {
-      console.log(data.drinkName);
+      console.dir(req.body.drinkID);
       newDrinkOrder.drinkName = data.drinkName; 
       
       newDrinkOrder.save(function(err, data) {
