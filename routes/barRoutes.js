@@ -59,6 +59,7 @@ module.exports = function(app, appSecret) {
     var newDrinkOrder = new DrinkOrder(req.body);
     newDrinkOrder.customerID = req.user._id;
     //given the user ID , look up the user profile pic web address
+    newDrinkOrder.customerPicture = 'https://cheers-bartender-app.herokuapp.com/' + req.user._id + '.jpg';
     newDrinkOrder.drinkID = req.body.drinkID;
     newDrinkOrder.save(function(err, data) {
       if (err) return res.status(500).send({'msg': 'could not save drink order'});
@@ -71,7 +72,7 @@ module.exports = function(app, appSecret) {
   app.put('/cheers/drinkorder/:drinkorderid', eat_auth(appSecret), function(req, res) {
     if (req.user[0].bartender) {
       var updatedDrinkOrder = req.body;
-      //updatedDrinkOrder.drinkID = 
+      updatedDrinkOrder.drinkID = req.body.drinkID; 
       //updatedDrinkOrder.customerPicture = 
       updatedDrinkOrder.bartenderID = req.user[0]._id;
       updatedDrinkOrder.orderInProgress = true;
