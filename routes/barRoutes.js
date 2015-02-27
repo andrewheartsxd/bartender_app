@@ -63,21 +63,21 @@ module.exports = function(app, appSecret) {
     newDrinkOrder.customerID = req.user[0]._id;
     newDrinkOrder.customerUsername = req.user[0].username;
     newDrinkOrder.customerPicture = 'https://cheers-bartender-app.herokuapp.com/' + req.user[0]._id + '.jpg';
+    newDrinkOrder.drinkName = '';
 
     //vvvvvvvv CONFIRM THIS IS PROVIDED BY iOS
     newDrinkOrder.drinkID = req.body.drinkID;
     
-    //WWWWWWWWWWWWTTTTTTTTTTTTTTTTTFFFFFFFFFFFFFFFFFFF
     Drink.find({_id: req.body.drinkID}, function(err, data) {
       console.log(data[0].drinkName);
       newDrinkOrder.drinkName = data[0].drinkName; 
-    });
-
-    newDrinkOrder.save(function(err, data) {
-      if (err) return res.status(500).send({'msg': 'could not save drink order'});
       
-      res.json(data);
+      newDrinkOrder.save(function(err, data) {
+        if (err) return res.status(500).send({'msg': 'could not save drink order'});
+        res.json(data);
+      });
     });
+    
   });
 
   //update drinkOrder object's bartenderID, sets orderInProgress to true 
