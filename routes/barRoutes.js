@@ -26,12 +26,12 @@ module.exports = function(app, appSecret) {
     var newDrink = new Drink(req.body);
     newDrink.save(function(err, data) {
       if (err) return res.status(500).send({'msg': 'could not save drink'});
-      
+
       res.json(data);
     });
   });
 
-  //update drinks that can be made (FOR DEVELOPMENT) 
+  //update drinks that can be made (FOR DEVELOPMENT)
   app.put('/cheers/drink/:drink', eat_auth(appSecret), function(req, res) {
     var updatedDrink = req.body;
     delete req.body._id;
@@ -74,18 +74,18 @@ module.exports = function(app, appSecret) {
     //});
 
     Drink.findOne({_id: req.body.drinkID}, function(err, data) {
-      console.log(data.drinkName);
-      newDrinkOrder.drinkName = data.drinkName; 
-      
+      //console.log(data.drinkName);
+      newDrinkOrder.drinkName = data.drinkName;
+
       newDrinkOrder.save(function(err, data) {
         if (err) return res.status(500).send({'msg': 'could not save drink order'});
         res.json(data);
       });
     });
-    
+
   });
 
-  //update drinkOrder object's bartenderID, sets orderInProgress to true 
+  //update drinkOrder object's bartenderID, sets orderInProgress to true
   app.put('/cheers/drinkorder/:drinkorderid', eat_auth(appSecret), function(req, res) {
     if (req.user[0].bartender) {
       var updatedDrinkOrder = req.body;
