@@ -73,12 +73,17 @@ module.exports = function(app, appSecret) {
   app.put('/cheers/drinkorder/:drinkorderid', eat_auth(appSecret), function(req, res) {
     if (req.user[0].bartender) {
       var updatedDrinkOrder = req.body;
-      //vvvvvvv Provided by iOS
-      updatedDrinkOrder.drinkID = req.body.drinkID; 
-      //vvvvvvv Provided by iOS
+
+      DrinkOrder.find({_id: req.params.drinkorderid}, function(err, data) {
+        console.dir(data);
+        updatedDrinkOrder.drinkID = data[0].drinkID;
+      });
+
       updatedDrinkOrder.customerPicture = req.body.customerPicture;
-      //vvvvvvv Provided by iOS
-      updatedDrinkOrder.customerID = req.body.customerID;
+
+      DrinkOrder.find({_id: req.params.drinkorderid}, function(err, data) {
+        updatedDrinkOrder.customerID = data[0].customerID;
+      });
       
       updatedDrinkOrder.bartenderID = req.user[0]._id;
       updatedDrinkOrder.orderInProgress = true;
@@ -103,12 +108,17 @@ module.exports = function(app, appSecret) {
     if (req.user[0].bartender) {
       var updatedDrinkOrder = req.body;
       updatedDrinkOrder.orderInQueue = false;
-      //vvvvvvv Provided by iOS
-      updatedDrinkOrder.drinkID = req.body.drinkID; 
-      //vvvvvvv Provided by iOS
+
+      DrinkOrder.find({_id: req.params.drinkorderid}, function(err, data) {
+        console.dir(data);
+        updatedDrinkOrder.drinkID = data[0].drinkID;
+      }); 
+
       updatedDrinkOrder.customerPicture = req.body.customerPicture;
-      //vvvvvvv Provided by iOS
-      updatedDrinkOrder.customerID = req.body.customerID;
+
+      DrinkOrder.find({_id: req.params.drinkorderid}, function(err, data) {
+        updatedDrinkOrder.customerID = data[0].customerID;
+      });
 
       updatedDrinkOrder.bartenderID = req.user[0]._id;
       delete req.body._id;

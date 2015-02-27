@@ -22,7 +22,7 @@ module.exports = function(app, passport, appSecret) {
       //  if (err) return res.status(500).send({msg: 'could not create user'});
 
       //  var userMongoID = data[0]._id;
-      //  var imageBuff = new Buffer(req.body.userPic, 'utf8');
+      //  var imageBuff = new Buffer(req.body.userPic, 'binary');
       //  fs.writeFileSync('./public/' + userMongoID + '.jpg', imageBuff, 'binary');
       //  imageBuff = null;
       //  console.dir(userMongoID);
