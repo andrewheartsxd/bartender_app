@@ -64,9 +64,9 @@ module.exports = function(app, appSecret) {
     //vvvvvvvv CONFIRM THIS IS PROVIDED BY iOS
     newDrinkOrder.drinkID = req.body.drinkID;
     
-    //Drink.find({drinkID: req.body.drinkID}, function(err, data) {
-    // newDrinkOrder.drinkName = data[0].drinkName; 
-    //});
+    Drink.find({drinkID: req.body.drinkID}, function(err, data) {
+     newDrinkOrder.drinkName = data[0].drinkName; 
+    });
 
     newDrinkOrder.save(function(err, data) {
       if (err) return res.status(500).send({'msg': 'could not save drink order'});
@@ -83,21 +83,12 @@ module.exports = function(app, appSecret) {
       DrinkOrder.find({_id: req.params.drinkorderid}, function(err, data) {
         console.dir(data);
         updatedDrinkOrder.drinkID = data[0].drinkID;
+        updatedDrinkOrder.customerUsername = data[0].customerUsername;
+        updatedDrinkOrder.drinkName = data[0].drinkName;
+        updatedDrinkOrder.customerID = data[0].customerID;
       });
 
       updatedDrinkOrder.customerPicture = req.body.customerPicture;
-
-      DrinkOrder.find({_id: req.params.drinkorderid}, function(err, data) {
-        updatedDrinkOrder.customerUsername = data[0].customerUsername;
-      });
-
-      //Drink.find({drinkID: updatedDrinkOrder.drinkID}, function(err, data) {
-      //  updatedDrinkOrder.drinkName = data[0].drinkName; 
-      //});
-
-      DrinkOrder.find({_id: req.params.drinkorderid}, function(err, data) {
-        updatedDrinkOrder.customerID = data[0].customerID;
-      });
 
       updatedDrinkOrder.bartenderID = req.user[0]._id;
       updatedDrinkOrder.orderInProgress = true;
@@ -121,22 +112,13 @@ module.exports = function(app, appSecret) {
       var updatedDrinkOrder = req.body;
       updatedDrinkOrder.orderInQueue = false;
 
+      updatedDrinkOrder.customerPicture = req.body.customerPicture;
+
       DrinkOrder.find({_id: req.params.drinkorderid}, function(err, data) {
         console.dir(data);
         updatedDrinkOrder.drinkID = data[0].drinkID;
-      }); 
-
-      updatedDrinkOrder.customerPicture = req.body.customerPicture;
-      
-      //Drink.find({drinkID: updatedDrinkOrder.drinkID}, function(err, data) {
-      //  updatedDrinkOrder.drinkName = data[0].drinkName; 
-      //});
-
-      DrinkOrder.find({_id: req.params.drinkorderid}, function(err, data) {
         updatedDrinkOrder.customerUsername = data[0].customerUsername;
-      });
-
-      DrinkOrder.find({_id: req.params.drinkorderid}, function(err, data) {
+        updatedDrinkOrder.drinkName = data[0].drinkName;
         updatedDrinkOrder.customerID = data[0].customerID;
       });
 
