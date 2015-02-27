@@ -64,9 +64,9 @@ module.exports = function(app, appSecret) {
     //vvvvvvvv CONFIRM THIS IS PROVIDED BY iOS
     newDrinkOrder.drinkID = req.body.drinkID;
     
-    Drink.find({drinkID: req.body.drinkID}, function(err, data) {
-     newDrinkOrder.drinkName = data[0].drinkName; 
-    });
+    //Drink.find({drinkID: req.body.drinkID}, function(err, data) {
+    // newDrinkOrder.drinkName = data[0].drinkName; 
+    //});
 
     newDrinkOrder.save(function(err, data) {
       if (err) return res.status(500).send({'msg': 'could not save drink order'});
@@ -91,9 +91,9 @@ module.exports = function(app, appSecret) {
         updatedDrinkOrder.customerUsername = data[0].customerUsername;
       });
 
-      Drink.find({drinkID: updatedDrinkOrder.drinkID}, function(err, data) {
-        updatedDrinkOrder.drinkName = data[0].drinkName; 
-      });
+      //Drink.find({drinkID: updatedDrinkOrder.drinkID}, function(err, data) {
+      //  updatedDrinkOrder.drinkName = data[0].drinkName; 
+      //});
 
       DrinkOrder.find({_id: req.params.drinkorderid}, function(err, data) {
         updatedDrinkOrder.customerID = data[0].customerID;
@@ -128,9 +128,9 @@ module.exports = function(app, appSecret) {
 
       updatedDrinkOrder.customerPicture = req.body.customerPicture;
       
-      Drink.find({drinkID: updatedDrinkOrder.drinkID}, function(err, data) {
-        updatedDrinkOrder.drinkName = data[0].drinkName; 
-      });
+      //Drink.find({drinkID: updatedDrinkOrder.drinkID}, function(err, data) {
+      //  updatedDrinkOrder.drinkName = data[0].drinkName; 
+      //});
 
       DrinkOrder.find({_id: req.params.drinkorderid}, function(err, data) {
         updatedDrinkOrder.customerUsername = data[0].customerUsername;
