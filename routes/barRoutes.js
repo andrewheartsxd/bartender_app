@@ -80,7 +80,7 @@ module.exports = function(app, appSecret) {
     });
   });
 
-  //update drinkOrder object's bartenderID, sets orderInProgress to true - the passed in body needs to be the entire drink order, with bartender set to null
+  //update drinkOrder object's bartenderID, sets orderInProgress to true 
   app.put('/cheers/drinkorder/:drinkorderid', eat_auth(appSecret), function(req, res) {
     if (req.user[0].bartender) {
       var updatedDrinkOrder = req.body;
@@ -93,8 +93,6 @@ module.exports = function(app, appSecret) {
         updatedDrinkOrder.customerID = data[0].customerID;
         updatedDrinkOrder.customerPicture = data[0].customerPicture;
       });
-
-      //updatedDrinkOrder.customerPicture = req.body.customerPicture;
 
       updatedDrinkOrder.bartenderID = req.user[0]._id;
       updatedDrinkOrder.orderInProgress = true;
@@ -117,8 +115,6 @@ module.exports = function(app, appSecret) {
     if (req.user[0].bartender) {
       var updatedDrinkOrder = req.body;
       updatedDrinkOrder.orderInQueue = false;
-
-      //updatedDrinkOrder.customerPicture = req.body.customerPicture;
 
       DrinkOrder.find({_id: req.params.drinkorderid}, function(err, data) {
         console.dir(data);
