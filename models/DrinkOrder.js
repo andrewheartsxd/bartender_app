@@ -8,7 +8,7 @@ var drinkOrderSchema = mongoose.Schema({
   //Customer who ordered
   customerID: String,
   //Drink name
-  drinkName: String,
+  drinkName: String, 
   //Kind of Drink
   drinkID: String,
   //Customer Profile Picture

@@ -57,15 +57,20 @@ module.exports = function(app, appSecret) {
   //create new drink order
   //fields: drinkOrderID, customerID, drinkID, bartenderID
   app.post('/cheers/drinkorder', eat_auth(appSecret), function(req, res) {
+
     var newDrinkOrder = new DrinkOrder(req.body);
+    //var newDrinkOrder = new DrinkOrder();
     newDrinkOrder.customerID = req.user[0]._id;
     newDrinkOrder.customerUsername = req.user[0].username;
     newDrinkOrder.customerPicture = 'https://cheers-bartender-app.herokuapp.com/' + req.user[0]._id + '.jpg';
+
     //vvvvvvvv CONFIRM THIS IS PROVIDED BY iOS
     newDrinkOrder.drinkID = req.body.drinkID;
     
-    Drink.find({drinkID: req.body.drinkID}, function(err, data) {
-     newDrinkOrder.drinkName = data[0].drinkName; 
+    //WWWWWWWWWWWWTTTTTTTTTTTTTTTTTFFFFFFFFFFFFFFFFFFF
+    Drink.find({_id: req.body.drinkID}, function(err, data) {
+      console.log(data[0].drinkName);
+      newDrinkOrder.drinkName = data[0].drinkName; 
     });
 
     newDrinkOrder.save(function(err, data) {
