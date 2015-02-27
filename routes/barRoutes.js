@@ -12,7 +12,8 @@ module.exports = function(app, appSecret) {
 // Drink
 
   //retrieve all drinks that can be made
-  app.get('/cheers/drink', eat_auth(appSecret), function(req, res) {
+  //app.get('/cheers/drink', eat_auth(appSecret), function(req, res) {
+  app.get('/cheers/drink', function(req, res) {
     Drink.find({}, function(err, data) {
       if (err) return res.status(500).send({'msg': 'could not retrieve drinks'});
       res.json(data);
