@@ -58,11 +58,12 @@ module.exports = function(app, appSecret) {
   //fields: drinkOrderID, customerID, drinkID, bartenderID
   app.post('/cheers/drinkorder', eat_auth(appSecret), function(req, res) {
 
-    var newDrinkOrder = new DrinkOrder(req.body);
-    //var newDrinkOrder = new DrinkOrder();
+    //var newDrinkOrder = new DrinkOrder(req.body);
+    var newDrinkOrder = new DrinkOrder();
     newDrinkOrder.customerID = req.user[0]._id;
     newDrinkOrder.customerUsername = req.user[0].username;
     newDrinkOrder.customerPicture = 'https://cheers-bartender-app.herokuapp.com/' + req.user[0]._id + '.jpg';
+    newDrinkOrder.drinkName = '';
 
     //vvvvvvvv CONFIRM THIS IS PROVIDED BY iOS
     newDrinkOrder.drinkID = req.body.drinkID;
