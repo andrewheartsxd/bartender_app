@@ -60,13 +60,17 @@ module.exports = function(app, appSecret) {
 
     var newDrinkOrder = new DrinkOrder(req.body);
     //var newDrinkOrder = new DrinkOrder();
+    
+    newDrinkOrder.drinkID = req.body.drinkID;
+    console.log(req.body.drinkID);
+    
     newDrinkOrder.customerID = req.user[0]._id;
     newDrinkOrder.customerUsername = req.user[0].username;
     newDrinkOrder.customerPicture = 'https://cheers-bartender-app.herokuapp.com/' + req.user[0]._id + '.jpg';
 
     //vvvvvvvv CONFIRM THIS IS PROVIDED BY iOS
-    newDrinkOrder.drinkID = req.body.drinkID;
-    console.log(req.body.drinkID);
+    //newDrinkOrder.drinkID = req.body.drinkID;
+    //console.log(req.body.drinkID);
 
     newDrinkOrder.save(function(err, data) {
         if (err) return res.status(500).send({'msg': 'could not save drink order'});
