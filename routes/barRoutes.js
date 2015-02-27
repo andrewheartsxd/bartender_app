@@ -45,9 +45,9 @@ module.exports = function(app, appSecret) {
 
 // Drink Order
 
-  //retrieves all drink orders (the queue)
+  //retrieves all drink orders set to visible (the queue)
   app.get('/cheers/drinkorder', eat_auth(appSecret), function(req, res) {
-    DrinkOrder.find({}, function(err, data) {
+    DrinkOrder.find({orderInQueue: true}, function(err, data) {
       if (err) return res.status(500).send({'msg': 'could not retrieve drink orders'});
       res.json(data);
     });
@@ -57,10 +57,10 @@ module.exports = function(app, appSecret) {
   //fields: drinkOrderID, customerID, drinkID, bartenderID
   app.post('/cheers/drinkorder', eat_auth(appSecret), function(req, res) {
     var newDrinkOrder = new DrinkOrder(req.body);
-    newDrinkOrder.customerID = req.user._id;
+    newDrinkOrder.customerID = req.user[0]._id;
     //given the user ID , look up the user profile pic web address
-    //newDrinkOrder.customerPicture = req.user._id; 
-    //'https://cheers-bartender-app.herokuapp.com/' + req.user._id + '.jpg';
+    newDrinkOrder.customerPicture = 'https://cheers-bartender-app.herokuapp.com/' + req.user[0]._id + '.jpg';
+    //vvvvvvvv Provided by iOS
     newDrinkOrder.drinkID = req.body.drinkID;
     newDrinkOrder.save(function(err, data) {
       if (err) return res.status(500).send({'msg': 'could not save drink order'});
@@ -73,8 +73,13 @@ module.exports = function(app, appSecret) {
   app.put('/cheers/drinkorder/:drinkorderid', eat_auth(appSecret), function(req, res) {
     if (req.user[0].bartender) {
       var updatedDrinkOrder = req.body;
+      //vvvvvvv Provided by iOS
       updatedDrinkOrder.drinkID = req.body.drinkID; 
-      //updatedDrinkOrder.customerPicture = 
+      //vvvvvvv Provided by iOS
+      updatedDrinkOrder.customerPicture = req.body.customerPicture;
+      //vvvvvvv Provided by iOS
+      updatedDrinkOrder.customerID = req.body.customerID;
+      
       updatedDrinkOrder.bartenderID = req.user[0]._id;
       updatedDrinkOrder.orderInProgress = true;
       updatedDrinkOrder.orderInQueue = true;
@@ -98,6 +103,14 @@ module.exports = function(app, appSecret) {
     if (req.user[0].bartender) {
       var updatedDrinkOrder = req.body;
       updatedDrinkOrder.orderInQueue = false;
+      //vvvvvvv Provided by iOS
+      updatedDrinkOrder.drinkID = req.body.drinkID; 
+      //vvvvvvv Provided by iOS
+      updatedDrinkOrder.customerPicture = req.body.customerPicture;
+      //vvvvvvv Provided by iOS
+      updatedDrinkOrder.customerID = req.body.customerID;
+
+      updatedDrinkOrder.bartenderID = req.user[0]._id;
       delete req.body._id;
       DrinkOrder.update({_id: req.params.drinkorderid}, updatedDrinkOrder, function(err, data) {
        if (err) return res.status(500).send({'msg': 'could not add bartender'});
