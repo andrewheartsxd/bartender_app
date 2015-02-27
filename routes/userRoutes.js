@@ -13,6 +13,7 @@ module.exports = function(app, passport, appSecret) {
     
     newUser.basic.email = req.body.email;
     newUser.basic.password = newUser.generateHash(req.body.password);
+    newUser.username = req.body.username;
     if(req.body.promoCode === "alcoholic") newUser.bartender = true;
     newUser.save(function(err, user) {
       if (err) return res.status(500).send({msg: 'could not create user'});
@@ -22,8 +23,8 @@ module.exports = function(app, passport, appSecret) {
       //  if (err) return res.status(500).send({msg: 'could not create user'});
 
       //  var userMongoID = data[0]._id;
-      //  var imageBuff = new Buffer(req.body.userPic, 'binary');
-      //  fs.writeFileSync('./public/' + userMongoID + '.jpg', imageBuff, 'binary');
+      //  var imageBuff = new Buffer(req.body.userPic, 'base64');
+      //  fs.writeFileSync('./public/' + userMongoID + '.jpg', imageBuff, 'base64');
       //  imageBuff = null;
       //  console.dir(userMongoID);
       //});

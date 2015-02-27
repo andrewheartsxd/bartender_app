@@ -49,6 +49,7 @@ module.exports = function(app, appSecret) {
   app.get('/cheers/drinkorder', eat_auth(appSecret), function(req, res) {
     DrinkOrder.find({orderInQueue: true}, function(err, data) {
       if (err) return res.status(500).send({'msg': 'could not retrieve drink orders'});
+      console.dir(data);
       res.json(data);
     });
   });
@@ -58,10 +59,15 @@ module.exports = function(app, appSecret) {
   app.post('/cheers/drinkorder', eat_auth(appSecret), function(req, res) {
     var newDrinkOrder = new DrinkOrder(req.body);
     newDrinkOrder.customerID = req.user[0]._id;
-    //given the user ID , look up the user profile pic web address
+    newDrinkOrder.customerUsername = req.user[0].username;
     newDrinkOrder.customerPicture = 'https://cheers-bartender-app.herokuapp.com/' + req.user[0]._id + '.jpg';
-    //vvvvvvvv Provided by iOS
+    //vvvvvvvv CONFIRM THIS IS PROVIDED BY iOS
     newDrinkOrder.drinkID = req.body.drinkID;
+    
+    Drink.find({drinkID: req.body.drinkID}, function(err, data) {
+     newDrinkOrder.drinkName = data[0].drinkName; 
+    });
+
     newDrinkOrder.save(function(err, data) {
       if (err) return res.status(500).send({'msg': 'could not save drink order'});
       
@@ -82,9 +88,17 @@ module.exports = function(app, appSecret) {
       updatedDrinkOrder.customerPicture = req.body.customerPicture;
 
       DrinkOrder.find({_id: req.params.drinkorderid}, function(err, data) {
+        updatedDrinkOrder.customerUsername = data[0].customerUsername;
+      });
+
+      Drink.find({drinkID: updatedDrinkOrder.drinkID}, function(err, data) {
+        updatedDrinkOrder.drinkName = data[0].drinkName; 
+      });
+
+      DrinkOrder.find({_id: req.params.drinkorderid}, function(err, data) {
         updatedDrinkOrder.customerID = data[0].customerID;
       });
-      
+
       updatedDrinkOrder.bartenderID = req.user[0]._id;
       updatedDrinkOrder.orderInProgress = true;
       updatedDrinkOrder.orderInQueue = true;
@@ -101,8 +115,6 @@ module.exports = function(app, appSecret) {
     }
   });
 
-
-
   //allow bartender to mark order as completed
   app.put('/cheers/drinkorder/completed/:drinkorderid', eat_auth(appSecret), function(req, res) {
     if (req.user[0].bartender) {
@@ -115,6 +127,14 @@ module.exports = function(app, appSecret) {
       }); 
 
       updatedDrinkOrder.customerPicture = req.body.customerPicture;
+      
+      Drink.find({drinkID: updatedDrinkOrder.drinkID}, function(err, data) {
+        updatedDrinkOrder.drinkName = data[0].drinkName; 
+      });
+
+      DrinkOrder.find({_id: req.params.drinkorderid}, function(err, data) {
+        updatedDrinkOrder.customerUsername = data[0].customerUsername;
+      });
 
       DrinkOrder.find({_id: req.params.drinkorderid}, function(err, data) {
         updatedDrinkOrder.customerID = data[0].customerID;

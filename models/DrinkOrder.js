@@ -4,9 +4,11 @@ var mongoose = require('mongoose');
 
 var drinkOrderSchema = mongoose.Schema({
   //Unique drink order ID
-  drinkOrderID: String,
+  customerUsername: String,
   //Customer who ordered
   customerID: String,
+  //Drink name
+  drinkName: String,
   //Kind of Drink
   drinkID: String,
   //Customer Profile Picture
