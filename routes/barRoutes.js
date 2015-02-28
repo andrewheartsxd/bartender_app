@@ -59,7 +59,7 @@ module.exports = function(app, appSecret) {
   app.post('/cheers/drinkorder', eat_auth(appSecret), function(req, res) {
 
     var newDrinkOrder = new DrinkOrder(req.body);
-    console.dir(req.user);
+    console.dir(req);
     //var newDrinkOrder = new DrinkOrder();
     
     newDrinkOrder.drinkID = req.headers.drinkID;
