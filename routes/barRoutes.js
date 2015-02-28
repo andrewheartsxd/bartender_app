@@ -58,8 +58,8 @@ module.exports = function(app, appSecret) {
   //fields: drinkOrderID, customerID, drinkID, bartenderID
   app.post('/cheers/drinkorder', eat_auth(appSecret), function(req, res) {
 
-    var newDrinkOrder = new DrinkOrder(req.body);
     console.dir(req);
+    var newDrinkOrder = new DrinkOrder(req.body);
     //var newDrinkOrder = new DrinkOrder();
     
     newDrinkOrder.drinkID = req.headers.drinkID;
