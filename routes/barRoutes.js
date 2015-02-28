@@ -23,6 +23,7 @@ module.exports = function(app, appSecret) {
   //add new drink to database (WILL BE POPULATED BY DEVS)
   //fields: drinkName, drinkRecipe, drinkPicture
   app.post('/cheers/drink', eat_auth(appSecret), function(req, res) {
+    console.dir(req.body);
     var newDrink = new Drink(req.body);
     newDrink.save(function(err, data) {
       if (err) return res.status(500).send({'msg': 'could not save drink'});
@@ -58,6 +59,7 @@ module.exports = function(app, appSecret) {
   //fields: drinkOrderID, customerID, drinkID, bartenderID
   app.post('/cheers/drinkorder', eat_auth(appSecret), function(req, res) {
 
+    //VVVV req HAS NO BODY?!?!?!?!?!
     console.dir(req);
     var newDrinkOrder = new DrinkOrder(req.body);
     //var newDrinkOrder = new DrinkOrder();
@@ -69,15 +71,12 @@ module.exports = function(app, appSecret) {
     newDrinkOrder.customerUsername = req.user[0].username;
     newDrinkOrder.customerPicture = 'https://cheers-bartender-app.herokuapp.com/' + req.user[0]._id + '.jpg';
 
-    //vvvvvvvv CONFIRM THIS IS PROVIDED BY iOS
-    //newDrinkOrder.drinkID = req.body.drinkID;
-    //console.log(req.body.drinkID);
-
     newDrinkOrder.save(function(err, data) {
-        if (err) return res.status(500).send({'msg': 'could not save drink order'});
-        res.json(data);
+      if (err) return res.status(500).send({'msg': 'could not save drink order'});
+      res.json(data);
     });
 
+    //Once req.body has data, use the below VVVVVVVVVVVVVVVVVVVV
     //Drink.findOne({_id: req.body.drinkID}, function(err, data) {
     //  console.dir(req.body.drinkID);
     //  newDrinkOrder.drinkName = data.drinkName; 
