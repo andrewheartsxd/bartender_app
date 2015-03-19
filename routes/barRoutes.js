@@ -64,7 +64,7 @@ module.exports = function(app, appSecret) {
     var newDrinkOrder = new DrinkOrder(req.body);
     //var newDrinkOrder = new DrinkOrder();
     
-    newDrinkOrder.drinkID = req.headers.drinkID;
+    newDrinkOrder.drinkID = req.body.drinkID;
     console.log(req.body.drinkID);
     
     newDrinkOrder.customerID = req.user[0]._id;
