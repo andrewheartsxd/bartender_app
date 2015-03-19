@@ -77,15 +77,15 @@ module.exports = function(app, appSecret) {
     });
 
     //Once req.body has data, use the below VVVVVVVVVVVVVVVVVVVV
-    //Drink.findOne({_id: req.body.drinkID}, function(err, data) {
-    //  console.dir(req.body.drinkID);
-    //  newDrinkOrder.drinkName = data.drinkName; 
-    //  
-    //  newDrinkOrder.save(function(err, data) {
-    //    if (err) return res.status(500).send({'msg': 'could not save drink order'});
-    //    res.json(data);
-    //  });
-    //});
+    Drink.findOne({_id: req.body.drinkID}, function(err, data) {
+      console.dir(req.body.drinkID);
+      newDrinkOrder.drinkName = data.drinkName; 
+      
+      newDrinkOrder.save(function(err, data) {
+        if (err) return res.status(500).send({'msg': 'could not save drink order'});
+        res.json(data);
+      });
+    });
     
   });
 
