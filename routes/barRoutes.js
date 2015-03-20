@@ -59,11 +59,14 @@ module.exports = function(app, appSecret) {
   //fields: drinkOrderID, customerID, drinkID, bartenderID
   app.post('/cheers/drinkorder', eat_auth(appSecret), function(req, res) {
 
+    if(!req.body) return res.status(500).send({'msg': 'didn\'t work'});
+
     //VVVV req HAS NO BODY?!?!?!?!?!
     console.dir(req);
     var newDrinkOrder = new DrinkOrder(req.body);
     //var newDrinkOrder = new DrinkOrder();
-    
+   
+   
     newDrinkOrder.drinkID = req.body.drinkID;
     console.log(req.body.drinkID);
     
@@ -82,7 +85,7 @@ module.exports = function(app, appSecret) {
       newDrinkOrder.drinkName = data.drinkName; 
       
       newDrinkOrder.save(function(err, data) {
-        if (err) return res.status(500).send({'msg': 'could not save drink order'});
+        if (err || data === null) return res.status(500).send({'msg': 'could not save drink order'});
         res.json(data);
       });
     });
