@@ -74,11 +74,6 @@ module.exports = function(app, appSecret) {
     newDrinkOrder.customerUsername = req.user[0].username;
     newDrinkOrder.customerPicture = 'https://cheers-bartender-app.herokuapp.com/' + req.user[0]._id + '.jpg';
 
-    //newDrinkOrder.save(function(err, data) {
-    //  if (err) return res.status(500).send({'msg': 'could not save drink order'});
-    //  res.json(data);
-    //});
-
     //Once req.body has data, use the below VVVVVVVVVVVVVVVVVVVV
     Drink.findOne({_id: req.body.drinkID}, function(err, data) {
       console.dir(req.body.drinkID);
