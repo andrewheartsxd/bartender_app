@@ -2,7 +2,6 @@
 
 var DrinkOrder = require('../models/DrinkOrder');
 var Drink = require('../models/Drink');
-var Bartender = require('../models/Bartender');
 var bodyparser = require('body-parser');
 var eat_auth = require('../lib/eat_auth');
 
@@ -23,6 +22,7 @@ module.exports = function(app, appSecret) {
   //add new drink to database (WILL BE POPULATED BY DEVS)
   //fields: drinkName, drinkRecipe, drinkPicture
   app.post('/cheers/drink', eat_auth(appSecret), function(req, res) {
+    console.dir(req.body);
     var newDrink = new Drink(req.body);
     newDrink.save(function(err, data) {
       if (err) return res.status(500).send({'msg': 'could not save drink'});
@@ -58,27 +58,28 @@ module.exports = function(app, appSecret) {
   //fields: drinkOrderID, customerID, drinkID, bartenderID
   app.post('/cheers/drinkorder', eat_auth(appSecret), function(req, res) {
 
+    if(!req.body) return res.status(500).send({'msg': 'didn\'t work'});
+
+    //VVVV req HAS NO BODY?!?!?!?!?!
+    console.dir(req);
     var newDrinkOrder = new DrinkOrder(req.body);
     //var newDrinkOrder = new DrinkOrder();
+   
+   
+    newDrinkOrder.drinkID = req.body.drinkID;
+    console.log(req.body.drinkID);
+    
     newDrinkOrder.customerID = req.user[0]._id;
     newDrinkOrder.customerUsername = req.user[0].username;
     newDrinkOrder.customerPicture = 'https://cheers-bartender-app.herokuapp.com/' + req.user[0]._id + '.jpg';
-    newDrinkOrder.drinkName = '';
 
-    //vvvvvvvv CONFIRM THIS IS PROVIDED BY iOS
-    newDrinkOrder.drinkID = req.body.drinkID;
-
-    //newDrinkOrder.save(function(err, data) {
-    //    if (err) return res.status(500).send({'msg': 'could not save drink order'});
-    //    res.json(data);
-    //});
-
+    //Once req.body has data, use the below VVVVVVVVVVVVVVVVVVVV
     Drink.findOne({_id: req.body.drinkID}, function(err, data) {
-      console.log(data.drinkName);
+      console.dir(req.body.drinkID);
       newDrinkOrder.drinkName = data.drinkName; 
       
       newDrinkOrder.save(function(err, data) {
-        if (err) return res.status(500).send({'msg': 'could not save drink order'});
+        if (err || data === null) return res.status(500).send({'msg': 'could not save drink order'});
         res.json(data);
       });
     });

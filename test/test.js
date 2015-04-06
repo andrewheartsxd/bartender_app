@@ -3,6 +3,7 @@
 process.env.MONGO_URI = 'mongodb://localhost/barapp_test';
 require('../server.js');
 var mongoose = require('mongoose');
+var Drink = require('../models/Drink');
 var chai = require('chai');
 var chaihttp = require('chai-http');
 var fs = require('fs');
@@ -10,24 +11,36 @@ chai.use(chaihttp);
 
 var expect = chai.expect;
 
-describe('The Bartender App', function(){
-  var token, originalFiles;
-    before(function(done) {
-      originalFiles = fs.readdirSync('./public').length;
-      console.log(originalFiles);
-      chai.request('localhost:3000/api/v1')
-        .post('/create_user')
-        .send({email: 'sample@sample', password: 'foobar123', username: 'boozeHound', userPic: 'sample pic', bartender: false})
-        .end(function(err, res) {
-          if (err) throw err;
+describe('The Bartender App', function() {
+  var token, originalFiles, drinkID;
+  before(function(done) {
+    
+    originalFiles = fs.readdirSync('./public').length;
+    console.log(originalFiles);
+    chai.request('localhost:3000/api/v1')
+      .post('/create_user')
+      .send({email: 'sample@sample.com', password: 'foobar123', username: 'boozeHound', userPic: 'samplePicURL', bartender: true})
+      .end(function(err, res) {
+        if (err) throw err;
         token = res.body.eat;
         done();
-    });
-  });
-  after(function(done) {
-      mongoose.connection.db.dropDatabase(function() {
-        done();
       });
+    chai.request('localhost:3000/api/v1/cheers/')
+      .post('/drink')
+      .send({eat: token, drinkName: 'b52'})
+      .end(function(err, res) {
+        if (err) throw err;
+        Drink.findOne({drinkName: 'b52'}, function(err, data) {
+          drinkID = data._id;
+          done();
+        }); 
+      });
+  });
+  
+  after(function(done) {
+    mongoose.connection.db.dropDatabase(function() {
+      done();
+    });
   });
 
   it('Should associate a user picture with each new user', function(done) {
@@ -50,7 +63,7 @@ describe('The Bartender App', function(){
     var id;
     chai.request('localhost:3000/api/v1')
       .post('/cheers/drinkorder')
-      .send({drinkOrderID: 'sample drinkOrderId', customerID: 'sample customerID', drinkID: 'sample drinkID', customerPicture: 'sample customerPicture', bartenderID: 'sample bartenderID', orderInProgress: 'sample orderInProgress', orderInQueue: 'sample orderInQueue', eat: token})
+      .send({drinkOrderID: 'sample drinkOrderId', customerID: 'sample customerID', drinkID: drinkID, customerPicture: 'samplePictureURL', eat: token})
       .end(function(err, res) {
         expect(err).to.eql(null);
         expect(res.body.drinkOrderID).to.eql('sample drinkOrderId');
