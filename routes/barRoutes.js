@@ -2,7 +2,6 @@
 
 var DrinkOrder = require('../models/DrinkOrder');
 var Drink = require('../models/Drink');
-var Bartender = require('../models/Bartender');
 var bodyparser = require('body-parser');
 var eat_auth = require('../lib/eat_auth');
 
