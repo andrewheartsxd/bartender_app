@@ -1,115 +1,150 @@
 'use strict';
 
-var DrinkOrder = require('../models/DrinkOrder');
+var Bar = require('../models/Bar');
 var Drink = require('../models/Drink');
+var DrinkOrder = require('../models/DrinkOrder');
 var bodyparser = require('body-parser');
 var eat_auth = require('../lib/eat_auth');
 
 module.exports = function(app, appSecret) {
   app.use(bodyparser.json());
 
+// Bar
+ 
+  //create a new bar
+  app.post('/cheers/bars', eat_auth(appSecret), function(req, res) {
+   var newBar = new Bar(req.body);
+   newBar.save(function(err, data) {
+     if (err) return res.status(500).send({'msg': 'could not create bar'});
+     res.json(data);
+   });
+  });
+
+  //retrieve list of bars
+  app.get('/cheers/bars', eat_auth(appSecret), function(req, res) {
+    Bar.find({}, function(err, data) {
+      if (err) return res.status(500).send({'msg': 'could not retrive bars'});
+      res.json(data);
+    });
+
+  });
+
 // Drink
-
-  //retrieve all drinks that can be made
-  app.get('/cheers/drink', eat_auth(appSecret), function(req, res) {
-  //app.get('/cheers/drink', function(req, res) {
-    Drink.find({}, function(err, data) {
+  
+  //retrieve drinks that can be made at a bar 
+  app.get('/cheers/bars/:barID/drinks', eat_auth(appSecret), function(req, res) {
+    Bar.findById(req.params.barID, function(err, bar) {
       if (err) return res.status(500).send({'msg': 'could not retrieve drinks'});
-      res.json(data);
+      res.json(bar.drinks);
     });
   });
-
-  //add new drink to database (WILL BE POPULATED BY DEVS)
-  //fields: drinkName, drinkRecipe, drinkPicture
-  app.post('/cheers/drink', eat_auth(appSecret), function(req, res) {
-    console.dir(req.body);
+   
+  //adds a drink to a bar 
+  app.post('/cheers/bars/:barID/newdrink', eat_auth(appSecret), function(req, res) {
     var newDrink = new Drink(req.body);
-    newDrink.save(function(err, data) {
-      if (err) return res.status(500).send({'msg': 'could not save drink'});
-      
-      res.json(data);
+
+    Bar.findById(req.params.barID, function(err, bar) {
+      if(err) throw err;
+      console.log(bar);
+      bar.drinks.push({
+        drinkName: req.body.drinkName,
+        drinkPrice: req.body.drinkPrice,
+        drinkRecipe: req.body.drinkRecipe,
+        drinkPicture: req.body.drinkPicture
+      }); 
+      bar.save(function(err, bar) {
+        if (err) throw err;
+        console.dir(bar);
+        res.json(bar);
+      });
     });
   });
-
-  //update drinks that can be made (FOR DEVELOPMENT) 
-  app.put('/cheers/drink/:drink', eat_auth(appSecret), function(req, res) {
-    var updatedDrink = req.body;
-    delete req.body._id;
-    Drink.update({drinkName: req.params.drink}, updatedDrink, function(err, data) {
-     if (err) return res.status(500).send({'msg': 'could not add bartender'});
-
-     res.json(req.body);
-    });
-  });
-
 
 // Drink Order
 
-  //retrieves all drink orders set to visible (the queue)
-  app.get('/cheers/drinkorder', eat_auth(appSecret), function(req, res) {
-    DrinkOrder.find({orderInQueue: true}, function(err, data) {
-      if (err) return res.status(500).send({'msg': 'could not retrieve drink orders'});
-      console.dir(data);
-      res.json(data);
-    });
+  //retrieve drink orders at a bar set to visible (the queue) 
+  app.get('/cheers/bars/:barID/drinkorders', eat_auth(appSecret), function(req, res) {
+    //Bar
+    //  .findById(req.params.barID)
+    //  .populate('drinkOrderQueue.customerID')
+    //  .exec(function(err, bar) {
+    //    bar.save(function(err, bar) {
+    //      if (err) throw err;
+    //      console.log("bar saved");
+    //      console.dir(bar.drinkOrderQueue[0].customerID);
+    //      res.json(bar);
+    //    });
+    //  });
+    Bar.findById(req.params.barID, function(err, bar) {
+      var drinkOrder = bar.drinkOrderQueue.filter(function (drinkOrder) {
+        return (drinkOrder.orderInQueue);
+      });
+      console.log("SHOULD BE DRINK ORDERS");
+      console.dir(drinkOrder);
+      res.json(drinkOrder);
+    }); 
   });
 
-  //create new drink order
-  //fields: drinkOrderID, customerID, drinkID, bartenderID
-  app.post('/cheers/drinkorder', eat_auth(appSecret), function(req, res) {
-
-    if(!req.body) return res.status(500).send({'msg': 'didn\'t work'});
-
-    //VVVV req HAS NO BODY?!?!?!?!?!
-    console.dir(req);
-    var newDrinkOrder = new DrinkOrder(req.body);
-    //var newDrinkOrder = new DrinkOrder();
-   
-   
-    newDrinkOrder.drinkID = req.body.drinkID;
-    console.log(req.body.drinkID);
+  //create drink order at a bar
+  app.post('/cheers/bars/:barID/newdrinkorder', eat_auth(appSecret), function(req, res) {
     
+    var newDrinkOrder = new DrinkOrder(req.body);
+
+    newDrinkOrder.drinkID = req.body.drinkID;
+    //console.log('newDrinkOrder.drinkID: ' + newDrinkOrder.drinkID);
+
     newDrinkOrder.customerID = req.user[0]._id;
     newDrinkOrder.customerUsername = req.user[0].username;
     newDrinkOrder.customerPicture = 'https://cheers-bartender-app.herokuapp.com/' + req.user[0]._id + '.jpg';
 
-    //Once req.body has data, use the below VVVVVVVVVVVVVVVVVVVV
-    Drink.findOne({_id: req.body.drinkID}, function(err, data) {
-      console.dir(req.body.drinkID);
-      newDrinkOrder.drinkName = data.drinkName; 
-      
-      newDrinkOrder.save(function(err, data) {
-        if (err || data === null) return res.status(500).send({'msg': 'could not save drink order'});
-        res.json(data);
-      });
+    Bar.findById(req.params.barID, function(err, bar) {
+      if (err) throw err;
+      newDrinkOrder.drinkName = bar.drinks.id(newDrinkOrder.drinkID).drinkName;
+      bar.drinkOrderQueue.push(newDrinkOrder);
+      bar.save(function(err, bar) {
+        if (err || bar === null) return res.status(500).send({'msg': 'could not save drink order'});
+        console.dir(bar.drinkOrderQueue);
+        res.json(bar.drinkOrderQueue);
+      });        
     });
-    
+
+    var stripe = require("stripe")("sk_test_BQokikJOvBiI2HlWgH4olfQ2");
+    var stripeToken = req.body.stripeToken;
+
+    var charge = stripe.charges.create({
+      amount: 1000, // amount in cents, again
+      currency: "usd",
+      source: stripeToken,
+      description: "payinguser@example.com"}, function(err, charge) {
+        if (err && err.type === 'StripeCardError') {
+          console.log("Credit Card Declined");
+        }
+        console.log('charge:');
+        console.dir(charge);  
+      }
+    );
+
   });
 
   //update drinkOrder object's bartenderID, sets orderInProgress to true 
-  app.put('/cheers/drinkorder/:drinkorderid', eat_auth(appSecret), function(req, res) {
+  app.put('/cheers/bars/:barID/drinkorders/:drinkorderID', eat_auth(appSecret), function(req, res) {
     if (req.user[0].bartender) {
-      var updatedDrinkOrder = req.body;
 
-      DrinkOrder.findOne({_id: req.params.drinkorderid}, function(err, data) {
-        console.dir(data);
-        updatedDrinkOrder.drinkID = data.drinkID;
-        updatedDrinkOrder.customerUsername = data.customerUsername;
-        updatedDrinkOrder.drinkName = data.drinkName;
-        updatedDrinkOrder.customerID = data.customerID;
-        updatedDrinkOrder.customerPicture = data.customerPicture;
+      Bar.findById(req.params.barID, function(err, bar) {
+        if (err) throw err;
+
+        var drinkOrder = bar.drinkOrderQueue.id(req.params.drinkorderID);
+        console.dir(drinkOrder);
+        drinkOrder.bartenderID = req.user[0]._id;
+        drinkOrder.orderInProgress = true;
+
+        bar.save(function(err, bar) {
+          if (err || bar === null) return res.status(500).send({'msg': 'could not add bartender'});
+          console.dir(bar.drinkOrderQueue);
+          res.json(bar.drinkOrderQueue);
+        });
       });
 
-      updatedDrinkOrder.bartenderID = req.user[0]._id;
-      updatedDrinkOrder.orderInProgress = true;
-      updatedDrinkOrder.orderInQueue = true;
-      delete req.body._id;
-      DrinkOrder.update({_id: req.params.drinkorderid}, updatedDrinkOrder, function(err, data) {
-       if (err) return res.status(500).send({'msg': 'could not add bartender'});
-
-       res.json(req.body);
-
-      });
     } else {
       console.dir(req.user);
       return res.status(403).send({'msg': 'could not add bartender (bad auth)'});
@@ -117,27 +152,21 @@ module.exports = function(app, appSecret) {
   });
 
   //allow bartender to mark order as completed
-  app.put('/cheers/drinkorder/completed/:drinkorderid', eat_auth(appSecret), function(req, res) {
+  app.put('/cheers/bars/:barID/drinkorders/:drinkorderID/completed', eat_auth(appSecret), function(req, res) {
     if (req.user[0].bartender) {
-      var updatedDrinkOrder = req.body;
-      updatedDrinkOrder.orderInQueue = false;
 
-      DrinkOrder.findOne({_id: req.params.drinkorderid}, function(err, data) {
-        console.dir(data);
-        updatedDrinkOrder.drinkID = data.drinkID;
-        updatedDrinkOrder.customerUsername = data.customerUsername;
-        updatedDrinkOrder.drinkName = data.drinkName;
-        updatedDrinkOrder.customerID = data.customerID;
-        updatedDrinkOrder.customerPicture = data.customerPicture;
-      });
+      Bar.findById(req.params.barID, function(err, bar) {
+        if (err) throw err;
 
-      updatedDrinkOrder.bartenderID = req.user[0]._id;
-      delete req.body._id;
-      DrinkOrder.update({_id: req.params.drinkorderid}, updatedDrinkOrder, function(err, data) {
-       if (err) return res.status(500).send({'msg': 'could not add bartender'});
+        var drinkOrder = bar.drinkOrderQueue.id(req.params.drinkorderID);
+        console.dir(drinkOrder);
+        drinkOrder.orderInQueue = false;
 
-       res.json(req.body);
-
+        bar.save(function(err, bar) {
+          if (err || bar === null) return res.status(500).send({'msg': 'could not mark as completed'});
+          console.dir(bar.drinkOrderQueue);
+          res.json(bar.drinkOrderQueue);
+        });
       });
     } else {
       console.dir(req.user);
@@ -145,5 +174,4 @@ module.exports = function(app, appSecret) {
     }
   });
 };
-
 

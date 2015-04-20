@@ -6,15 +6,15 @@ var drinkOrderSchema = mongoose.Schema({
   //Unique drink order ID
   customerUsername: String,
   //Customer who ordered
-  customerID: String,
+  customerID: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
   //Drink name
   drinkName: String, 
   //Kind of Drink
-  drinkID: String,
+  drinkID: {type: mongoose.Schema.Types.ObjectId, ref: 'Drink'},
   //Customer Profile Picture
   customerPicture: String,
   //Bartender who makes drink
-  bartenderID: {type: String, default: null},
+  bartenderID: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
   //Is the drink being made?
   orderInProgress: {type: Boolean, default: false},
   //Is it visible in the queue?
