@@ -23,9 +23,9 @@ module.exports = function(app, passport, appSecret) {
         if (err) return res.status(500).send({msg: 'could not create user'});
 
         var userMongoID = data[0]._id;
-        //var imageBuff = new Buffer(req.body.userPic, 'base64');
-        //fs.writeFileSync('./public/' + userMongoID + '.jpg', imageBuff, 'base64');
-        //imageBuff = null;
+        var imageBuff = new Buffer(req.body.userPic, 'base64');
+        fs.writeFileSync('./public/' + userMongoID + '.jpg', imageBuff, 'base64');
+        imageBuff = null;
         console.dir(userMongoID);
       });
 
